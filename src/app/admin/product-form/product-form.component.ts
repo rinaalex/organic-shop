@@ -13,6 +13,7 @@ import { ProductService } from 'src/app/product.service';
 export class ProductFormComponent implements OnInit {
   categories$: Observable<any>;
   product: any = {};
+  id;
 
   constructor(
     private categoryService: CategoryService,
@@ -22,12 +23,14 @@ export class ProductFormComponent implements OnInit {
   ) {
     this.categories$ = categoryService.getCategories();
 
-    let id = this.route.snapshot.paramMap.get('id');
-    if (id) this.productService.get(id).pipe(take(1)).subscribe(p => this.product = p);
+    this.id = this.route.snapshot.paramMap.get('id');
+    if (this.id) this.productService.get(this.id).pipe(take(1)).subscribe(p => this.product = p);
   }
 
   save(product) {
-    this.productService.create(product);
+    if (this.id) this.productService.update(this.id, product);
+    else this.productService.create(product);
+    
     this.router.navigate(['/admin/products']);
   }
 
