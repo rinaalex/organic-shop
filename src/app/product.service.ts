@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { map } from 'rxjs/operators';
+import { Product } from './models/product';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,14 @@ export class ProductService {
         map(actions => actions.map(action => {
           const key = action.payload.key;
           const data = action.payload.val();
-          return { key, title: data['title'], price: data['price'] }
+          const result: Product = {
+            key,
+            title: data['title'], 
+            price: data['price'],
+            category: data['category'],
+            imageUrl: data['imageUrl']
+          }
+          return result;
         }))
       )
   }
